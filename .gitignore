@@ -1,0 +1,10 @@
+lab1/docs/
+!lab1/sploits/
+lab1/sploits/*
+!lab1/sploits/*.c
+!lab1/sploits/*.h
+!lab1/sploits/Makefile
+lab1/targets/*
+!lab1/targets/*.c
+!lab1/targets/*.h
+!lab1/targets/Makefile
