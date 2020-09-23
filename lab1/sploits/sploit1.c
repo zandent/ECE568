@@ -42,3 +42,16 @@ main ( int argc, char * argv[] )
 
 	return (0);
 }
+/*
+set follow-fork-mode child
+b main
+run
+c
+b lab_main
+c
+info frame
+p &buf
+
+set {int}0x40a4fecc = 0
+
+*/
