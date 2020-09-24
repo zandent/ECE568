@@ -22,3 +22,14 @@ b 17
 c
 n
 
+set follow-fork-mode child
+b main
+run
+c
+b foo
+c
+cd ../targets/
+info frame
+p &buf
+
+
