@@ -9,3 +9,16 @@ p &buf
 
 set {int}0x40a4fecc = 0
 
+set follow-fork-mode child
+b main
+run
+c
+b foo
+c
+cd ../targets/
+info frame
+p &buf
+b 17
+c
+n
+
