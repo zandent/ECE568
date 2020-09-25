@@ -31,5 +31,7 @@ c
 cd ../targets/
 info frame
 p &buf
-
+n
+n
+x 0x40a4fe68
 
