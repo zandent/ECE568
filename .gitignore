@@ -1,4 +1,6 @@
-lab1/docs/
+!lab1/docs/
+lab1/docs/*
+!lab1/docs/explanations_lab1.txt
 !lab1/sploits/
 lab1/sploits/*
 !lab1/sploits/*.c
