@@ -1,2 +1,2 @@
 # ECE568
-Fall 2020 ECE568 labs
+Winter 2021 ECE568 labs
