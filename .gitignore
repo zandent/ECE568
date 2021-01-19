@@ -1,3 +1,16 @@
+!old/lab1/
+old/lab1/*
+!old/lab1/sploits/
+old/lab1/sploits/*
+!old/lab1/sploits/*.c
+!old/lab1/sploits/*.h
+!old/lab1/sploits/explanations_lab1.txt
+old/lab1/sploits/Makefile
+old/lab1/targets/*
+!old/lab1/targets/*.c
+!old/lab1/targets/*.h
+!old/lab1/targets/Makefile
+
 !lab1/
 lab1/*
 !lab1/sploits/

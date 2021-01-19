@@ -21,8 +21,8 @@ foo ( char * arg )
 {
 	char	buf[64];
 
-	sprintf ( buf, "ECE56820" );
-	bar ( arg, buf, 80 );
+	sprintf ( buf, "AAAA" );
+	bar ( arg, buf, 88 );
 
 	return (0);
 }

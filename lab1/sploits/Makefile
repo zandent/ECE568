@@ -1,5 +1,5 @@
 # tools
-CC := gcc
+CC := /usr/bin/gcc
 RM := rm -f
 
 # flags

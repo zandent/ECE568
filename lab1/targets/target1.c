@@ -13,7 +13,7 @@ int
 lab_main ( int argc, char *argv[] )
 {
 	int	t = 2;
-	char	buf[112];
+	char	buf[96];
 
 	printf ("Target1 running.\n");
 

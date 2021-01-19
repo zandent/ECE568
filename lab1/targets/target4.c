@@ -7,12 +7,12 @@ foo ( char *arg )
 {
 	int		len;
 	int		i;
-	char		buf[188];
+	char		buf[156];
 	static char *	a;
 	static char *	b;
 	
 	len = strlen(arg);
-	if (len > 201) len = 201;
+	if (len > 169) len = 169;
 
 	a = arg;
 	b = buf;

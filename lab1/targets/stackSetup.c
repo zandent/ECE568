@@ -5,10 +5,10 @@
 	"target" thread is starting from a fixed, known address.  The code that would
 	normally be in main() should be in a function called lab_main() instead.
 
-	Please send any bug reports to Courtney Gibson <gibson@eecg.utoronto.ca> or David Lie <lie@eecg.toronto.edu>
+	Please send any bug reports to Courtney Gibson <gibson@eecg.utoronto.ca>
 */
 
-#define	STACK_LOCATION	0x40a30000 
+#define	STACK_LOCATION	0x020200000
 #define	STACK_SIZE	( 128 * 1024 )
 
 #include <assert.h>
