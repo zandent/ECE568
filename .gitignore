@@ -1,3 +1,5 @@
+!old/
+old/*
 !old/lab1/
 old/lab1/*
 !old/lab1/sploits/
@@ -6,6 +8,7 @@ old/lab1/sploits/*
 !old/lab1/sploits/*.h
 !old/lab1/sploits/explanations_lab1.txt
 old/lab1/sploits/Makefile
+!old/lab1/targets/
 old/lab1/targets/*
 !old/lab1/targets/*.c
 !old/lab1/targets/*.h
@@ -19,6 +22,7 @@ lab1/sploits/*
 !lab1/sploits/*.h
 !lab1/sploits/explanations_lab1.txt
 lab1/sploits/Makefile
+!lab1/targets/
 lab1/targets/*
 !lab1/targets/*.c
 !lab1/targets/*.h
