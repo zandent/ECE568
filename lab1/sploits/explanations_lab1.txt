@@ -1,2 +1,57 @@
 #Zihan Zhao, 1001103708, simon.zhao@mail.utoronto.ca
-#first2 last2, studentnum2, e-mail address2
+#Hao Wang, 1001303500, ternal.wang@mail.utoronto.ca
+
+Sploits1:
+Vulnerability:
+(Buffer overflows)
+The string copy would not stop until ‘\0’ which means we can using string copy to change the return address of lab_main.
+Exploit:
+We use gdb find the the start address of buf and also the address that stores the lab_main return address. We modify the args[1].
+args[1]: (shellcode)+(0x909090)+(0x2021fe10 * 19times)+(0x00)
+The shellcode is in 0x000000002021fe10 and the return address was modified to 0x000000002021fe10.
+
+Sploits2:
+Vulnerability:
+(Buffer overflows)
+The for loop in foo would not stop until i <= len.
+The address of i(0x2021fe48), len(0x2021fe4c), buf(0x2021fd40), and return(0x2021fe58), in foo, follow one by one.
+The buffer of args and env are connected in the stack.
+Exploit:
+args[1]: (shellcode)+(0x90 * 219times)+(0x0909090b)+(0x011c)+(0x00)
+env[0]: (0x00)
+env[1]: (0x2021fd40 * 3times) + (0x00)
+During the iteration when i=0x00000108(264) it was modified to i=0x0000010b(267), those three 0x09 in args[1] would be jumped.
+len was modified from 0x0000010e(270) to 0x0000011c(284).
+Based on the change of data i and len we finally changed the return address to the shellcode(0x2021fd40).
+
+Sploits3:
+Vulnerability:
+(Buffer overflows)
+The for loop in bar would not stop until rich the end of the arg which means we can overflow and change the return address of foo.
+Exploit:
+We use gdb find the the start address of buf and also the address that stores the foo return address. We modify the args[1].
+The buf address is 0x2021fe10 the shellcode would begin with 0x2021fe14 because of the sprintf of “AAAA”.
+args[1]: (shellcode)+(0x909090)+(0x2021fe14 * 6times)+(0x00)
+final buf: (“AAAA”)+(shellcode)+(0x909090)+(0x2021fe14 * 6times)+(0x00)
+The shellcode is in 0x000000002021fe14 and the return address was modified to 0x000000002021fe14.
+
+Sploits4:
+Vulnerability:
+(Buffer overflows)
+The for loop in foo would not stop until i <= len.
+The address of i(0x2021fe5c), len(0x2021fe58), buf(0x2021fdb0), and return(0x2021fe68), in foo, follow one by one.
+The buffer of args and env are connected in the stack.
+Exploit:
+args[1]: (shellcode)+(0x90 * 123times)+(0xbc)+(0x00)
+env[0]: (0x00)
+env[1]: (0x00)
+env[2]: (0xac)+(0x00)
+env[3]: (0x00)
+env[4]: (0x00)
+env[5]: (0x2021fdb0 * 3times) + (0x00)
+During the iteration when i=0x000000ac(172) it was modified to i=0x000000ac(172) again seems nothing happened.
+len was modified from 0x000000a9(169) to 0x000000bc(188).
+Based on the change of data i and len we finally changed the return address to the shellcode(0x2021fdb0).
+
+Sploits5:
+Sploits6:
