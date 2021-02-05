@@ -265,6 +265,6 @@ Vulnerability:
 (Double free attacks)
 The attacker can set fake tags into the stack by strncpy and then a mistake-free would overwrite a memory location choose by the attacker.
 Exploit:
-We set our shellcode at the beginning of p and we also edit the tag’s free bit. When q was freed the return address would be changed to the beginning of the p.
+We set our shellcode at the beginning of p and we also edit each tag’s free bit and their neighbor's address. tfree(q) would change the return address to the beginning of the p.
 However, this way the shellcode would also be modified due to tfree(q).
 Therefore we also edit the shellcode, before it would jump 0x1f now it would jump 0x25 so that the changing area would be skipped.
