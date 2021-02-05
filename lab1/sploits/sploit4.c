@@ -23,7 +23,6 @@ main ( int argc, char * argv[] )
 	memcpy(buf+ARGLEN-2,FAKELEN,1);
 	buf[ARGLEN-1]='\0';
 
-	memcpy(buf+ARGLEN-7,CURRI,1);
 	char envbuf[ENVLEN];
 	memset(envbuf,NOP,ENVLEN);
 	int i;
