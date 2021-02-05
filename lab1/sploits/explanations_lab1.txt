@@ -54,4 +54,14 @@ len was modified from 0x000000a9(169) to 0x000000bc(188).
 Based on the change of data i and len we finally changed the return address to the shellcode(0x2021fdb0).
 
 Sploits5:
+Vulnerability:
+(Format string)
+The buffer of args and env are connected in the stack.
+snprintf can have many % to keeps moving up the stack.
+%n can modifies the memory pointed to by the argument.
+We can change the return address if a %n is points to the return address on the stack.
+Exploit:
+We can have lots of % to reach the head of the formatString[0] where store the return address’s address.
+Then we can use %hhn to change the first byte of the return address. And continue use dummy value and %hhn to change the whole return address.
+
 Sploits6:
