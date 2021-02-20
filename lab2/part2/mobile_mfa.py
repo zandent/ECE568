@@ -220,8 +220,45 @@ class BioConnect:
 		# >>> Add code here to call
 		#    .../v2/users/<userId>/authenicators/<authenticatorId>
 		# and process the response
+		headers = {
+			'Content-Type':		'application/json',
+			'accept':		'application/json',
+			'bcaccesskey':		self.bcaccesskey,
+			'bcentitykey':		self.bcentitykey,
+			'bctoken':		self.bctoken
+		}
+		url = 'https://%s/v2/users/%s' \
+			'/authenticators/%s' % \
+			( hostname, self.userId, self.authenticatorId )
+		#url = 'https://'+str(hostname)+'/v2/users/'+self.userId+'/authenticators/'+self.authenticatorId
+		#print('get', url)
+		result = requests.get(url,headers=headers)
+		if result == False:
+			# Error: we did not receive an HTTP/200
+			print(headers)
+			print(result.content)
+			sys.exit("Error: unable to get authenticator status")
 
-		return('')
+		try:
+			# Parse the JSON reply
+			reply = json.loads(result.content.decode('utf-8'))
+
+		except ValueError:
+			print(headers)
+			print(result.content)
+			sys.exit("Error: unexpected reply for get authenticator status")
+	
+		# Extract the activation URL for this mobile phone
+		authstatus = reply.get("status","")
+		fa = reply.get("face_status","")
+		vo = reply.get("voice_status","")
+		fi = reply.get("fingerprint_status","")
+		ey = reply.get("eye_status","")
+		#print(authstatus,fa,vo,fi,ey)
+		if authstatus=='active' and (fa=='enrolled' or vo=='enrolled' or fi=='enrolled' or ey=='enrolled'):
+			return "active"
+		else:
+			return "inactive"
 
 
 	# ===== sendStepup: Pushes an authentication request to the mobile app
@@ -233,8 +270,45 @@ class BioConnect:
 		# >>> Add code here to call
 		#     .../v2/user_verifications
 		# to push an authentication request to the mobile device
+		global	hostname
 
-		pass
+		url = 'https://%s/v2/user_verifications' % \
+			(hostname)
+
+		headers = {
+			'Content-Type':		'application/json',
+			'accept':		'application/json',
+			'bcaccesskey':		self.bcaccesskey,
+			'bcentitykey':		self.bcentitykey,
+			'bctoken':		self.bctoken
+		}
+
+		data = {
+			'user_uuid':			self.userId,
+			'transaction_id':		transactionId,
+			'message':	message
+		}
+
+		# Send our POST request to the server
+		result = requests.post(url, data=json.dumps(data), headers=headers)
+
+		if result == False:
+			# Error: we did not receive an HTTP/200
+			print(headers)
+			print(json.dumps(data))
+			print(result.content)
+			sys.exit("Error: unable to user verify")
+
+		try:
+			# Parse the JSON reply
+			reply = json.loads(result.content.decode('utf-8'))
+
+			# Extract the authenticatorId
+			self.stepupId = reply.get("user_verification","").get("uuid","")
+
+		except ValueError:
+			self.stepupId = ""
+
 
 	# ===== getStepupStatus: Fetches the status of the user auth request
 
@@ -243,9 +317,35 @@ class BioConnect:
 		# >>> Add code here to call
 		#     .../v2/user_verifications/<verificationId>
 		# to poll for the current status of the verification
+		headers = {
+			'Content-Type':		'application/json',
+			'accept':		'application/json',
+			'bcaccesskey':		self.bcaccesskey,
+			'bcentitykey':		self.bcentitykey,
+			'bctoken':		self.bctoken
+		}
+		url = 'https://'+str(hostname)+'/v2/user_verifications/'+self.stepupId
+		#print('getstatus', url)
+		result = requests.get(url,headers=headers)
+		if result == False:
+			# Error: we did not receive an HTTP/200
+			print(headers)
+			print(result.content)
+			sys.exit("Error: unable to get stepup status")
 
-		return('declined')
+		try:
+			# Parse the JSON reply
+			reply = json.loads(result.content.decode('utf-8'))
 
+		except ValueError:
+			print(headers)
+			print(result.content)
+			sys.exit("Error: unexpected reply for get stepup status")
+	
+		# Extract the activation URL for this mobile phone
+		stepupstatus = reply.get("user_verification","").get("status","")
+		#print(stepupstatus)
+		return(stepupstatus)
 
 	# ===== deleteUser: Deletes the user and mobile phone entries
 
