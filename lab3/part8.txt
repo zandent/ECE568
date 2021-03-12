@@ -1,4 +1,1 @@
-The pin is 4862
-
-101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
-101 AND ((select pin from credit where cc_number = 1234123412341234) > <Nnumber2>)
+4862
