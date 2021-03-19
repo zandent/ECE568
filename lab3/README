@@ -1,6 +1,13 @@
 #Zihan Zhao, 1001103708, simon.zhao@mail.utoronto.ca
 #Hao Wang, 1001303500, ternal.wang@mail.utoronto.ca
 
+Part 1 Explanation:
+First I would let the user search my script. My script would create a user name and password interface by user's search. After user typed their user name and password if they clicked the submit button that information would be sent to the attacker's server.
+
+The vulnerability is when users search for something that thing could be displayed by the HTML. Therefore we can write some HTML script that would be executed by the HTML.
+
+After the user clicks the search button and sees the login interface, they would mistakenly think it is required for their search.
+
 Part2:
 <script> 
 var card_arr = document.getElementsByName("input1");
