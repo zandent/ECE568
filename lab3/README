@@ -25,6 +25,8 @@ message.innerHTML =  "";
 "
 The entry that lets the user input their three-digit number is exploitable. We create the script into that input. After the user typed their information and click the purchase button. Our script would be executed which would send their information to the attacker's server. 
 
+Part 3 Explanation:
+We created a image which has a special URL. The URL have screen = 423096428 and menu = 900. The URL would transfer 5000$ from the user when the user open the image.
 
 Part8:
 101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
