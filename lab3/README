@@ -33,6 +33,16 @@ We created a image which has a special URL. The URL have screen = 423096428 and 
 Part 4 Explanation:
 We would let the message first go to the transfer URL. When the URL was accessed we would change this URL to an other URL that make transfer=CONFIRMED which would confirm this transfer.
 
+
+Part 5 Explanation:
+We would let the message first go to the transfer URL. When the URL was accessed we could find the token value in that webpage. And then we would change this URL to another URL that contains the transfer value and token value in the end which would finish the transfer.
+
+
+Part 6 Explanation:
+
+Part 7 Explanation:
+Part 8 Explanation:
+
 Part8:
 101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
 101 AND ((select pin from credit where cc_number = 1234123412341234) > <Nnumber2>)
