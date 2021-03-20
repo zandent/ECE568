@@ -39,7 +39,9 @@ We would let the message first go to the transfer URL. When the URL was accessed
 
 
 Part 6 Explanation:
-SELECT * FROM user_data WHERE last_name = 'Smith' or '1'='1'
+If I input (' or '1'='1) then the SQL language would become (SELECT * FROM user_data WHERE last_name = '' or '1'='1') this is always true and we can access all the user's information.
+
+
 Part 7 Explanation:
 Part 8 Explanation:
 
