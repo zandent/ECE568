@@ -1,0 +1,9 @@
+#Zihan Zhao, 1001103708, simon.zhao@mail.utoronto.ca
+#Hao Wang, 1001303500, ternal.wang@mail.utoronto.ca
+
+Part 1 Explanation:
+dig utoronto.ca
+dig ns2.d-zone.ca +short
+dig ns1.d-zone.ca +short
+dig utoronto.ca mx
+dig utoronto-ca.mail.protection.outlook.com +short
