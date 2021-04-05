@@ -2,8 +2,6 @@
 #Hao Wang, 1001303500, ternal.wang@mail.utoronto.ca
 
 Part 1 Explanation:
-dig utoronto.ca
-dig ns2.d-zone.ca +short
-dig ns1.d-zone.ca +short
-dig utoronto.ca mx
-dig utoronto-ca.mail.protection.outlook.com +short
+using command 'dig utoronto.ca' for question 1.
+using command 'dig ns2.d-zone.ca +short' and 'dig ns1.d-zone.ca +short' for question 2.
+using command 'dig utoronto.ca mx' and 'dig utoronto-ca.mail.protection.outlook.com +short' for question 3.
