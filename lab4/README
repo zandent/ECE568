@@ -2,6 +2,18 @@
 #Hao Wang, 1001303500, ternal.wang@mail.utoronto.ca
 
 Part 1 Explanation:
-using command 'dig utoronto.ca' for question 1.
+using command 'dig utoronto.ca' for question 1. It returns the ip for “utoronto.ca” as well as the name servers DNS names.
 using command 'dig ns2.d-zone.ca +short' and 'dig ns1.d-zone.ca +short' for question 2.
 using command 'dig utoronto.ca mx' and 'dig utoronto-ca.mail.protection.outlook.com +short' for question 3.
+
+Part 2 Explanation:
+First, we use command “dig @127.0.0.1 NS google.com -p <proxy port>” to send DNS query to our proxy server. In the proxy server, we use UDP to receive DNS query. Then we forward the original DNS query to BIND server by UDP packet. Once received from BIND server, we forward the original DNS response back to the requester. 
+
+Part 3 Explanation:
+Using the part2 proxy server, if the user query NS of “example.com”, i.e. “dig @127.0.0.1 NS example.com -p <proxy port>”. We still forward the packet to BIND. Once received, change the data region DNSRR’s ip to 1.2.3.4 and DNSQR region’s name to be “ns.dnslabattacker.net”. We send the modified packet back to the requester.
+
+Part 4 Explanation:
+First, send a DNS query for “example.com” to BIND and acquire the received DNS response. 
+Second, modify the DNS response packet: change the NS name which is to be asked to example.com. Change the NS region with “ns.dnslabattacker.net”.
+Third, send a DNS query for “<random 8-byte string>.example.com”. Immediately, with different Transaction IDs, change the qd name to be “<random 8-byte string>.example.com”, send the modified packet 50 times. They are fake DNS response. They will be sent to BIND’s query port.
+Finally, check the BIND response contains “ns.dnslabattacker.net” NS or not. If not, repeat third step. If yes, it is a success attack.
